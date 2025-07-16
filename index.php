@@ -1,45 +1,55 @@
 <?php
-
 // By @v_9_k_e
 
 ob_start();
-mkdir('data');
-mkdir('EMIL');
-mkdir('EMILS');
-mkdir('BUY');
-mkdir('assignment');
-mkdir('data/id');
-mkdir('data/txt');
-mkdir('data/api');
-$API_KEY= '7858818024:AAERzD-_V5ceBtUOfIHO25wq_OPSdER7IKQ';
-define('API_KEY',$API_KEY);
-echo file_get_contents("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=" . $_SERVER['SERVER_NAME'] . "" . $_SERVER['SCRIPT_NAME']);
-function bot($method,$datas=[]){
-$amrakl = http_build_query($datas);
-$url = "https://api.telegram.org/bot".API_KEY."/".$method."?$amrakl";
-$amrakl = file_get_contents($url);
-return json_decode($amrakl);
-}
-$update = json_decode(file_get_contents('php://input'));
 
-$message = $update->message;
-$chat_id = $message->chat->id;
-$text = $message->text;
-$message_id = $message->message_id;
-$id = $message->from->id;
-if($update->callback_query){
-$id                                   = $update->callback_query->message->chat->id;
-}else{
-$id           						= $update->message->chat->id;
+// إنشاء المجلدات إذا لم تكن موجودة
+@mkdir('data');
+@mkdir('EMIL');
+@mkdir('EMILS');
+@mkdir('BUY');
+@mkdir('assignment');
+@mkdir('data/id');
+@mkdir('data/txt');
+@mkdir('data/api');
+
+// توكن البوت
+$API_KEY = '7858818024:AAERzD-_V5ceBtUOfIHO25wq_OPSdER7IKQ';
+define('API_KEY', $API_KEY);
+
+// ربط webhook باستخدام الرابط الفعلي للخادم
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$script = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+$webhook_url = "https://$host$script";
+@file_get_contents("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=$webhook_url");
+
+// دالة ارسال طلبات إلى Telegram
+function bot($method, $datas = []){
+    $url = "https://api.telegram.org/bot" . API_KEY . "/" . $method . "?" . http_build_query($datas);
+    $response = @file_get_contents($url);
+    return json_decode($response, true);
 }
-$user = $message->from->username;
-$first = $message->from->first_name;
-if(isset($update->callback_query)){
-$chat_id = $update->callback_query->message->chat->id;
-$message_id = $update->callback_query->message->message_id;
-$data = $update->callback_query->data;
-$user = $update->callback_query->from->username;
-$first = $update->callback_query->from->first_name;
+
+// قراءة التحديث الوارد
+$update = json_decode(file_get_contents('php://input'), true);
+
+// التحقق من وجود رسالة
+$message = $update['message'] ?? null;
+$callback_query = $update['callback_query'] ?? null;
+
+$chat_id = $message['chat']['id'] ?? null;
+$text = $message['text'] ?? null;
+$message_id = $message['message_id'] ?? null;
+$user_id = $message['from']['id'] ?? null;
+
+if ($callback_query) {
+    $chat_id = $callback_query['message']['chat']['id'] ?? $chat_id;
+    $user_id = $callback_query['from']['id'] ?? $user_id;
+    $username = $callback_query['from']['username'] ?? '';
+    $first_name = $callback_query['from']['first_name'] ?? '';
+} else {
+    $username = $message['from']['username'] ?? '';
+    $first_name = $message['from']['first_name'] ?? '';
 }
 #=========={التخزينات}==========#
 function Aemil($array){
