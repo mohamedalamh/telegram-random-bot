@@ -3,44 +3,84 @@
 // By @v_9_k_e
 
 ob_start();
-mkdir('data');
-mkdir('EMIL');
-mkdir('EMILS');
-mkdir('BUY');
-mkdir('assignment');
-mkdir('data/id');
-mkdir('data/txt');
-mkdir('data/api');
-$API_KEY= '7858818024:AAERzD-_V5ceBtUOfIHO25wq_OPSdER7IKQ';
-define('API_KEY',$API_KEY);
-echo file_get_contents("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=" . $_SERVER['SERVER_NAME'] . "" . $_SERVER['SCRIPT_NAME']);
-function bot($method,$datas=[]){
-$amrakl = http_build_query($datas);
-$url = "https://api.telegram.org/bot".API_KEY."/".$method."?$amrakl";
-$amrakl = file_get_contents($url);
-return json_decode($amrakl);
-}
-$update = json_decode(file_get_contents('php://input'));
+@mkdir('data');
+@mkdir('EMIL');
+@mkdir('EMILS');
+@mkdir('BUY');
+@mkdir('assignment');
+@mkdir('data/id');
+@mkdir('data/txt');
+@mkdir('data/api');
 
-$message = $update->message;
-$chat_id = $message->chat->id;
-$text = $message->text;
-$message_id = $message->message_id;
-$id = $message->from->id;
-if($update->callback_query){
-$id                                   = $update->callback_query->message->chat->id;
-}else{
-$id           						= $update->message->chat->id;
+$API_KEY = '7858818024:AAERzD-_V5ceBtUOfIHO25wq_OPSdER7IKQ';
+define('API_KEY', $API_KEY);
+
+// تسجيل Webhook تلقائي
+echo file_get_contents("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=" . $_SERVER['SERVER_NAME'] . "" . $_SERVER['SCRIPT_NAME']);
+
+// دالة الاتصال بالبوت
+function bot($method, $datas = []) {
+    $amrakl = http_build_query($datas);
+    $url = "https://api.telegram.org/bot" . API_KEY . "/" . $method . "?" . $amrakl;
+    $amrakl = file_get_contents($url);
+    return json_decode($amrakl);
 }
-$user = $message->from->username;
-$first = $message->from->first_name;
-if(isset($update->callback_query)){
-$chat_id = $update->callback_query->message->chat->id;
-$message_id = $update->callback_query->message->message_id;
-$data = $update->callback_query->data;
-$user = $update->callback_query->from->username;
-$first = $update->callback_query->from->first_name;
+
+// دالة قراءة آمنة من الملفات
+function safe_file_get_contents($file) {
+    if (!file_exists($file)) {
+        @file_put_contents($file, '');
+    }
+    return file_get_contents($file);
 }
+
+// دالة حفظ آمن
+function safe_json_get($file) {
+    $data = safe_file_get_contents($file);
+    $json = json_decode($data, true);
+    return is_array($json) ? $json : [];
+}
+
+$update = json_decode(file_get_contents('php://input'));
+$message = $update->message ?? null;
+
+$chat_id = $message->chat->id ?? null;
+$text = $message->text ?? '';
+$message_id = $message->message_id ?? null;
+$id = $message->from->id ?? null;
+$user = $message->from->username ?? 'بدون معرف';
+$first = $message->from->first_name ?? '';
+
+if (isset($update->callback_query)) {
+    $callback = $update->callback_query;
+    $chat_id = $callback->message->chat->id ?? $chat_id;
+    $message_id = $callback->message->message_id ?? $message_id;
+    $data = $callback->data ?? null;
+    $user = $callback->from->username ?? $user;
+    $first = $callback->from->first_name ?? $first;
+}
+
+// دوال تخزين
+function Aemil($array) {
+    file_put_contents('EMIL/emil.json', json_encode($array));
+}
+function Bemil($array) {
+    file_put_contents('EMIL/emils.json', json_encode($array));
+}
+
+// قراءة بيانات JSON بشكل آمن
+$emilData = safe_json_get("zzz.json");
+$usernameFromJson = $emilData['result']['username'] ?? null;
+
+// قراءة قيم من ملفات أخرى إن وجدت
+$ruble = safe_file_get_contents("data/txt/rubleall.txt");
+$point = safe_file_get_contents("data/txt/pointall.txt");
+
+// مثال على حماية explode
+$example = safe_file_get_contents("data/id/{$id}/number.txt");
+$parts = explode(":", $example ?? '');
+
+
 #=========={التخزينات}==========#
 function Aemil($array){
 file_put_contents('EMIL/emil.json', json_encode($array));
