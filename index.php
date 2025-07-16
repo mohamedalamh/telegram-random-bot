@@ -449,7 +449,9 @@ bot('sendMessage',[
 ",
 'parse_mode'=>"MarkDown",
 ]);
-(isset($assignment2["my"]) ? $assignment2["my"] : null)[$id] = $EEM;
+$tmp = isset($assignment2["my"]) ? $assignment2["my"] : [];
+$tmp[$id] = $EEM;
+$assignment2["my"] = $tmp;
 Dsai($assignment2);
 $points = (file_exists("EMILS/$EEM/points.txt") ? file_get_contents("EMILS/$EEM/points.txt") : "");
 $as = $points + $assignru;
