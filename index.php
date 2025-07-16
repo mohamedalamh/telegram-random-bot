@@ -1003,11 +1003,23 @@ bot('EditMessageText',[
 ]
 ])
 ]);
-(isset($EMILNow["emil"]) ? $EMILNow["emil"] : null)[$chat_id] = $emile;
-(isset($EMILNow["password"]) ? $EMILNow["password"] : null)[$chat_id] = $pase;
-Now($EMILNow);
-unlink("data/id/$id/step.txt");
+// التأكد من وجود المفاتيح في المصفوفة أولاً
+if (!isset($EMILNow["emil"])) {
+    $EMILNow["emil"] = [];
 }
+if (!isset($EMILNow["password"])) {
+    $EMILNow["password"] = [];
+}
+
+// تعيين البيانات داخل المصفوفات
+$EMILNow["emil"][$chat_id] = $emile;
+$EMILNow["password"][$chat_id] = $pase;
+
+// حفظ التعديلات
+Now($EMILNow);
+
+// حذف ملف الخطوة
+unlink("data/id/$id/step.txt");
 }
 #=========={القائمة الرئيسية}==========#
 if($data == "back"){
