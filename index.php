@@ -830,10 +830,20 @@ $EMIL[$chat_id]['emil'] = $emile;
 $EMIL[$chat_id]['pass'] = $password;
 $EMIL[$chat_id]['Date_created'] = "$D/$M/$Y $tims";
 Aemil($EMIL);
-(isset($EMILS["emils"]) ? $EMILS["emils"] : null)[$emile]['emil'] = $emile;
-(isset($EMILS["emils"]) ? $EMILS["emils"] : null)[$emile]['pass'] = $password;
-(isset($EMILS["emils"]) ? $EMILS["emils"] : null)[$emile]['Date_created'] = "$D/$M/$Y $tims";
-(isset($EMILS["emils"]) ? $EMILS["emils"] : null)[$emile]['id'] = $chat_id;
+// تأكد من أن المفتاح "emils" موجود في المصفوفة $EMILS
+if (!isset($EMILS["emils"])) {
+    $EMILS["emils"] = [];
+}
+
+// حفظ البيانات في المصفوفة
+$EMILS["emils"][$emile] = [
+    'emil' => $emile,
+    'pass' => $password,
+    'Date_created' => "$D/$M/$Y $tims",
+    'id' => $chat_id
+];
+
+// حفظ المصفوفة في الملف أو قاعدة البيانات باستخدام دالة Bemil
 Bemil($EMILS);
 unlink("data/id/$id/step.txt");
 exit;
