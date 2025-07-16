@@ -13,7 +13,6 @@ mkdir('data/txt');
 mkdir('data/api');
 $API_KEY= '7858818024:AAERzD-_V5ceBtUOfIHO25wq_OPSdER7IKQ';
 define('API_KEY',$API_KEY);
-echo (file_exists("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=" . (isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : null) . "" . (isset($_SERVER["SCRIPT_NAME"]) ? $_SERVER["SCRIPT_NAME"] : null)) ? file_get_contents("https://api.telegram.org/bot" . API_KEY . "/setwebhook?url=" . (isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : null) . "" . (isset($_SERVER["SCRIPT_NAME"]) ? $_SERVER["SCRIPT_NAME"] : null)) : "");
 function bot($method,$datas=[]){
 $amrakl = http_build_query($datas);
 $url = "https://api.telegram.org/bot".API_KEY."/".$method."?$amrakl";
